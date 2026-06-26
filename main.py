@@ -97,6 +97,35 @@ def ping():
 def html_test():
     return HTMLResponse("<h1>Server OK</h1><p>Templates test...</p>")
 
+@app.get("/tpl-test")
+def tpl_test(request: Request):
+    """Test if Jinja2 templates work"""
+    import traceback
+    try:
+        # Try to find the template file
+        import os as _os
+        tpl_dir = _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "templates")
+        files = _os.listdir(tpl_dir) if _os.path.isdir(tpl_dir) else []
+        tpl_path = _os.path.join(tpl_dir, "admin_login.html")
+        exists = _os.path.isfile(tpl_path)
+        
+        # Try to render
+        resp = templates.TemplateResponse("admin_login.html", {"request": request})
+        return {
+            "template_dir": tpl_dir,
+            "dir_exists": _os.path.isdir(tpl_dir),
+            "files": files,
+            "admin_login_exists": exists,
+            "render_ok": True
+        }
+    except Exception as e:
+        return {
+            "error": str(e),
+            "traceback": traceback.format_exc(),
+            "template_dir": tpl_dir if '_os' in dir() else 'unknown',
+            "dir_exists": _os.path.isdir(tpl_dir) if '_os' in dir() else 'unknown',
+        }
+
 #   TEST API
 # ═══════════════════════════════════════════════════════════
 @app.post("/api/start")
