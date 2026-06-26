@@ -34,6 +34,12 @@ BACKEND_URL = os.getenv("BACKEND_URL", "http://localhost:8000")
 ADMIN_USERNAME = os.getenv("ADMIN_USERNAME", "admin")
 ADMIN_PASSWORD_HASH = os.getenv("ADMIN_PASSWORD_HASH", "")
 
+# Default admin: admin / admin123 (change immediately!)
+_DEFAULT_ADMIN_HASH = hashlib.sha256(b"admin123").hexdigest()
+if not ADMIN_PASSWORD_HASH or ADMIN_PASSWORD_HASH == "bcrypt_hashed_password_here":
+    ADMIN_PASSWORD_HASH = _DEFAULT_ADMIN_HASH
+    print("WARNING: Using default admin password (admin / admin123). Change via ADMIN_PASSWORD_HASH env var.")
+
 stripe.api_key = STRIPE_SECRET_KEY
 
 # ─── Database ────────────────────────────────────────────
@@ -53,7 +59,6 @@ def get_db():
 # ─── Lifespan ────────────────────────────────────────────
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    load_dotenv()
     yield
 
 
@@ -657,7 +662,7 @@ def seed_questions(request: Request, db: Session = Depends(get_db)):
          ["几乎从来不会", "偶尔会有但金额小", "平均每月一次",
           "每周都有", "每天都在买不需要的东西"]),
         ("sq", "你对艺术（音乐、绘画、文学）的感受力？",
-         "非常热爱且有深入理解",
+         ["非常热爱且有深入理解",
          "比较喜欢，有自己的品味",
          "有一定兴趣但不深入",
          "不太感兴趣",
