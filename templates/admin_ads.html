@@ -1,0 +1,30 @@
+{% extends "admin_base.html" %}
+{% block title %}广告配置 - 七商管理后台{% endblock %}
+{% block content %}
+<h1 class="page-title">广告配置</h1>
+<p class="subtitle">在这里管理各展示位的广告代码，支持 HTML/JS 广告联盟代码</p>
+
+{% for ad in ads %}
+<form method="post" action="/admin/ads/update" class="ad-card">
+  <input type="hidden" name="ad_id" value="{{ ad.id }}">
+  <div class="ad-header">
+    <h3>{{ {"result_top":"结果页顶部","result_bottom":"结果页底部","sidebar":"侧边栏"}[ad.placement] }}</h3>
+    <label class="toggle-label">
+      <input type="checkbox" name="enabled" value="true" {{ 'checked' if ad.enabled }}>
+      <span class="toggle-text">{{ "已启用" if ad.enabled else "未启用" }}</span>
+    </label>
+  </div>
+  <textarea name="ad_code" rows="4" placeholder="粘贴广告代码（HTML/JS）">{{ ad.ad_code or '' }}</textarea>
+  <div class="ad-footer">
+    <span class="ad-id">位置: {{ ad.placement }}</span>
+    <button type="submit" class="btn btn-sm">保存</button>
+  </div>
+</form>
+{% endfor %}
+
+<div class="ad-tip">
+  <strong>提示：</strong> 支持 Google AdSense、联盟广告等 HTML/JS 代码。
+  建议在 <strong>结果页底部</strong> 放置 728x90 横幅广告，
+  在 <strong>结果页顶部</strong> 放置 468x60 横幅广告。
+</div>
+{% endblock %}

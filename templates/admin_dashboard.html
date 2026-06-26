@@ -1,0 +1,50 @@
+{% extends "admin_base.html" %}
+{% block title %}概览 - 七商管理后台{% endblock %}
+{% block content %}
+<h1 class="page-title">管理概览</h1>
+
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-value">{{ total_users }}</div>
+    <div class="stat-label">总用户数</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value" style="color:#00b894">{{ paid_users }}</div>
+    <div class="stat-label">付费用户</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value">{{ total_orders }}</div>
+    <div class="stat-label">总订单数</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value" style="color:#fdcb6e">{{ completed_orders }}</div>
+    <div class="stat-label">完成订单</div>
+  </div>
+  <div class="stat-card highlight">
+    <div class="stat-value">{{ "%.2f"|format(total_revenue / 100) }}</div>
+    <div class="stat-label">总收入（元）</div>
+  </div>
+</div>
+
+<h2 class="section-title">最新订单</h2>
+{% if recent_orders %}
+<table class="data-table">
+  <thead>
+    <tr><th>订单ID</th><th>金额</th><th>方式</th><th>状态</th><th>时间</th></tr>
+  </thead>
+  <tbody>
+    {% for o in recent_orders %}
+    <tr>
+      <td>{{ o.id }}</td>
+      <td>{{ "%.2f"|format(o.amount / 100) }} 元</td>
+      <td>{{ o.payment_method or "-" }}</td>
+      <td><span class="badge {{ o.status }}">{{ {"pending":"待支付","completed":"已完成","failed":"失败"}[o.status] }}</span></td>
+      <td>{{ o.created_at.strftime("%m-%d %H:%M") if o.created_at else "-" }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p class="empty-state">暂无订单数据</p>
+{% endif %}
+{% endblock %}

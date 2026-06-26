@@ -1,0 +1,64 @@
+{% extends "admin_base.html" %}
+{% block title %}题目管理 - 七商管理后台{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1 class="page-title">题目管理</h1>
+  <button class="btn btn-sm" onclick="document.getElementById('addForm').classList.toggle('hidden')">+ 添加题目</button>
+</div>
+
+<form id="addForm" method="post" action="/admin/questions/add" class="add-form hidden">
+  <div class="form-row">
+    <select name="category" required>
+      <option value="">选择分类</option>
+      <option value="mq">德商 MQ</option>
+      <option value="iq">智商 IQ</option>
+      <option value="eq">情商 EQ</option>
+      <option value="aq">逆商 AQ</option>
+      <option value="fq">财商 FQ</option>
+      <option value="sq">灵商 SQ</option>
+      <option value="hq">健商 HQ</option>
+    </select>
+    <input type="number" name="sort_order" placeholder="排序" value="0" style="width:80px">
+    <label><input type="checkbox" name="is_paid" value="true"> 付费题</label>
+  </div>
+  <textarea name="question_text" placeholder="题目内容" required rows="2"></textarea>
+  <div class="form-row">
+    <input type="text" name="option_a" placeholder="选项A（5分）" required>
+    <input type="text" name="option_b" placeholder="选项B（4分）" required>
+  </div>
+  <div class="form-row">
+    <input type="text" name="option_c" placeholder="选项C（3分）" required>
+    <input type="text" name="option_d" placeholder="选项D（2分）" required>
+  </div>
+  <div class="form-row">
+    <input type="text" name="option_e" placeholder="选项E（1分）" required style="flex:1">
+    <button type="submit" class="btn btn-sm">保存</button>
+  </div>
+</form>
+
+<table class="data-table">
+  <thead>
+    <tr>
+      <th>排序</th><th>分类</th><th>题目</th><th>类型</th><th>状态</th><th>操作</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for q in questions %}
+    <tr>
+      <td>{{ q.sort_order }}</td>
+      <td><span class="category-tag">{{ q.category|upper }}</span></td>
+      <td class="q-text">{{ q.question_text[:50] }}{% if q.question_text|length > 50 %}...{% endif %}</td>
+      <td>{% if q.is_paid %}<span class="badge completed">付费</span>{% else %}免费{% endif %}</td>
+      <td><span class="badge {{ 'completed' if q.is_active else 'failed' }}">{{ "启用" if q.is_active else "禁用" }}</span></td>
+      <td><a href="/admin/questions/{{ q.id }}/toggle" class="btn-link">{{ "禁用" if q.is_active else "启用" }}</a></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<div class="pagination">
+  {% if page > 1 %}<a href="/admin/questions?page={{ page - 1 }}">上一页</a>{% endif %}
+  <span>第 {{ page }} / {{ total_pages }} 页（共 {{ total }} 题）</span>
+  {% if page < total_pages %}<a href="/admin/questions?page={{ page + 1 }}">下一页</a>{% endif %}
+</div>
+{% endblock %}

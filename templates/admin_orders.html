@@ -1,0 +1,32 @@
+{% extends "admin_base.html" %}
+{% block title %}订单管理 - 七商管理后台{% endblock %}
+{% block content %}
+<h1 class="page-title">订单管理</h1>
+
+<table class="data-table">
+  <thead>
+    <tr><th>订单ID</th><th>用户ID</th><th>金额</th><th>币种</th><th>支付方式</th><th>状态</th><th>时间</th></tr>
+  </thead>
+  <tbody>
+    {% for o in orders %}
+    <tr>
+      <td>{{ o.id }}</td>
+      <td>{{ o.user_id }}</td>
+      <td>{{ "%.2f"|format(o.amount / 100) }}</td>
+      <td>{{ o.currency|upper }}</td>
+      <td>{{ o.payment_method or "-" }}</td>
+      <td><span class="badge {{ o.status }}">{{ {"pending":"待支付","completed":"已完成","failed":"失败"}[o.status] }}</span></td>
+      <td>{{ o.created_at.strftime("%Y-%m-%d %H:%M") if o.created_at else "-" }}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="7" class="empty-state">暂无订单数据</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<div class="pagination">
+  {% if page > 1 %}<a href="/admin/orders?page={{ page - 1 }}">上一页</a>{% endif %}
+  <span>第 {{ page }} / {{ total_pages }} 页</span>
+  {% if page < total_pages %}<a href="/admin/orders?page={{ page + 1 }}">下一页</a>{% endif %}
+</div>
+{% endblock %}

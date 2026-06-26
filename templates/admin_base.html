@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}七商管理后台{% endblock %}</title>
+<link rel="stylesheet" href="/static/admin.css">
+</head>
+<body>
+<div class="admin-layout">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">7Q</div>
+      <div class="sidebar-title">七商管理</div>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="/admin/dashboard" class="nav-item">概览</a>
+      <a href="/admin/questions" class="nav-item">题目管理</a>
+      <a href="/admin/orders" class="nav-item">订单管理</a>
+      <a href="/admin/ads" class="nav-item">广告配置</a>
+      <a href="/admin/seed" class="nav-item" onclick="return confirm('确认导入种子数据？')">导入数据</a>
+      <a href="/admin/logout" class="nav-item logout">退出登录</a>
+    </nav>
+  </aside>
+  <main class="main-content">
+    {% block content %}{% endblock %}
+  </main>
+</div>
+</body>
+</html>
