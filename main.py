@@ -88,6 +88,15 @@ def get_admin_session(request: Request) -> bool:
 
 
 # ═══════════════════════════════════════════════════════════
+
+@app.get("/ping")
+def ping():
+    return {"status": "ok", "message": "Basic route works!"}
+
+@app.get("/html-test")
+def html_test():
+    return HTMLResponse("<h1>Server OK</h1><p>Templates test...</p>")
+
 #   TEST API
 # ═══════════════════════════════════════════════════════════
 @app.post("/api/start")
